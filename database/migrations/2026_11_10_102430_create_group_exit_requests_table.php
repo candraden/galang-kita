@@ -11,10 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('group_exit_requests', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+       Schema::create('group_exit_requests', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('group_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
+    $table->text('reason')->nullable();
+    $table->string('status')->default('pending'); // pending, approved, rejected
+    $table->text('review_note')->nullable();
+    $table->timestamp('reviewed_at')->nullable();
+    $table->timestamps();
+    $table->index(['group_id', 'status']);
+});
     }
 
     /**

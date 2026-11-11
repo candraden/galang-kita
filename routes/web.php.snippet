@@ -1,0 +1,36 @@
+<?php
+// GANTI isi routes/web.php dengan ini. Jika starter kit kamu menambahkan
+// `require __DIR__.'/auth.php';` (Breeze) atau route settings, pertahankan baris itu di bagian bawah.
+
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Fundraiser;
+use App\Http\Controllers\Member;
+use App\Http\Controllers\PageController;
+use Illuminate\Support\Facades\Route;
+
+Route::view('/', 'welcome')->name('home');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/segera/{page}', [PageController::class, 'soon'])->name('placeholder');
+
+    Route::middleware('role:super_admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [Admin\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/pengguna', [Admin\UserController::class, 'index'])->name('users');
+        Route::patch('/pengguna/{user}/status', [Admin\UserController::class, 'toggle'])->name('users.toggle');
+        Route::get('/grup', [Admin\GroupController::class, 'index'])->name('groups');
+        Route::patch('/grup/{group}/status', [Admin\GroupController::class, 'toggle'])->name('groups.toggle');
+    });
+
+    Route::middleware('role:fundraiser')->prefix('penggalang')->name('fundraiser.')->group(function () {
+        Route::get('/', [Fundraiser\DashboardController::class, 'index'])->name('dashboard');
+        // Hari 2: Route::resource('grup', Fundraiser\GroupController::class);
+    });
+
+    Route::middleware('role:member')->prefix('anggota')->name('member.')->group(function () {
+        Route::get('/', [Member\DashboardController::class, 'index'])->name('dashboard');
+    });
+});
+
+// require __DIR__.'/auth.php';  // <- aktifkan jika starter kit kamu memakainya

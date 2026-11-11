@@ -11,10 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('invitations', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+       Schema::create('invitations', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('group_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('created_by')->constrained('users')->cascadeOnDelete();
+    $table->string('token')->unique();
+    $table->timestamp('expires_at')->nullable();
+    $table->unsignedInteger('max_uses')->nullable();
+    $table->unsignedInteger('used_count')->default(0);
+    $table->boolean('is_active')->default(true);
+    $table->timestamps();
+    $table->index(['group_id', 'is_active']);
+    });
     }
 
     /**

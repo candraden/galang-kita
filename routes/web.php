@@ -1,20 +1,43 @@
 <?php
 
+use App\Http\Controllers\Admin;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Fundraiser;
+use App\Http\Controllers\Member;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::view('/', 'welcome')->name('home');
 
 Route::middleware('auth')->group(function () {
+    // Breeze mengarahkan setelah login ke route 'dashboard'; di sini diteruskan per peran
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/segera/{page}', [PageController::class, 'soon'])->name('placeholder');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::middleware('role:super_admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [Admin\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/pengguna', [Admin\UserController::class, 'index'])->name('users');
+        Route::patch('/pengguna/{user}/status', [Admin\UserController::class, 'toggle'])->name('users.toggle');
+        Route::get('/grup', [Admin\GroupController::class, 'index'])->name('groups');
+        Route::patch('/grup/{group}/status', [Admin\GroupController::class, 'toggle'])->name('groups.toggle');
+    });
+
+    Route::middleware('role:fundraiser')->prefix('penggalang')->name('fundraiser.')->group(function () {
+        Route::get('/', [Fundraiser\DashboardController::class, 'index'])->name('dashboard');
+        // Hari 2: Route::resource('grup', Fundraiser\GroupController::class);
+        Route::resource('grup', Fundraiser\GroupController::class)
+    ->parameters(['grup' => 'group'])
+    ->names('groups');
+    });
+
+    Route::middleware('role:member')->prefix('anggota')->name('member.')->group(function () {
+        Route::get('/', [Member\DashboardController::class, 'index'])->name('dashboard');
+    });
 });
 
 require __DIR__.'/auth.php';
