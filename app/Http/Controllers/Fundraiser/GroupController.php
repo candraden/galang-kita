@@ -61,7 +61,13 @@ class GroupController extends Controller
             ->latest('joined_at')
             ->get();
 
-        return view('fundraiser.groups.show', ['group' => $group, 'members' => $members]);
+        $invitation = $group->invitations()->where('is_active', true)->latest()->first();
+
+        return view('fundraiser.groups.show', [
+            'group'      => $group,
+            'members'    => $members,
+            'invitation' => $invitation,
+        ]);
     }
 
     /** UPDATE (form) */

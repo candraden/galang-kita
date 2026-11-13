@@ -2,75 +2,69 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>{{ config('app.name', 'Galang Kita') }}</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet">
-
-    <style>
-        @media (prefers-reduced-motion: no-preference) {
-            /* Satu momen: kartu masuk saat halaman dibuka */
-            @keyframes auth-card-in {
-                from { opacity: 0; transform: translateY(16px) scale(.985); }
-                to   { opacity: 1; transform: none; }
-            }
-            .auth-card { animation: auth-card-in .6s cubic-bezier(.2,.7,.2,1) both; }
-
-            /* Fallback saat GIF belum ada: motif konsentris berdenyut pelan */
-            @keyframes auth-ring {
-                0%, 100% { transform: scale(1); opacity: .10; }
-                50%      { transform: scale(1.06); opacity: .16; }
-            }
-            .auth-rings { animation: auth-ring 6s ease-in-out infinite; }
-        }
-    </style>
-
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans text-ink antialiased">
-    <div class="flex min-h-screen items-center justify-center bg-app bg-[radial-gradient(60rem_40rem_at_10%_-10%,#D1FAE5_0%,transparent_60%),radial-gradient(50rem_36rem_at_100%_110%,#D4DFFF_0%,transparent_55%)] p-4 sm:p-6">
+<body class="min-h-dvh overflow-x-hidden bg-[linear-gradient(135deg,#ecfdf5,#ffffff_50%,#f4f6f8)] font-sans text-ink antialiased">
 
-        <div class="auth-card grid w-full max-w-5xl gap-2 rounded-hero bg-white p-2.5 shadow-hero lg:grid-cols-2 lg:gap-6">
+    {{-- Dekorasi latar --}}
+    <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        {{-- blob kiri atas --}}
+        <div class="absolute -left-24 -top-24 size-72 rounded-full bg-primary/15 blur-xl"></div>
+        {{-- blob kiri bawah (hijau gradasi) --}}
+        <div class="absolute -bottom-28 -left-20 hidden size-80 rounded-full bg-gradient-to-tr from-teal-600 to-primary opacity-80 sm:block"></div>
+        <div class="absolute -bottom-20 -left-8 hidden size-56 rounded-full bg-primary/50 sm:block"></div>
+        {{-- blob kanan bawah (mint) --}}
+        <div class="absolute -bottom-20 -right-16 size-72 rounded-full bg-primary/20 blur-xl"></div>
+        {{-- lingkaran konsentris kiri atas & kanan atas --}}
+        <svg class="absolute -left-20 -top-20 hidden size-80 text-primary opacity-10 sm:block" viewBox="0 0 200 200" fill="none" stroke="currentColor">
+            <circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="52"/><circle cx="100" cy="100" r="74"/><circle cx="100" cy="100" r="96"/>
+        </svg>
+        <svg class="absolute -right-16 -top-16 hidden size-80 text-primary opacity-10 sm:block" viewBox="0 0 200 200" fill="none" stroke="currentColor">
+            <circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="52"/><circle cx="100" cy="100" r="74"/><circle cx="100" cy="100" r="96"/>
+        </svg>
+    </div>
 
-            {{-- Panel visual: taruh GIF di public/images/login-hero.gif --}}
-            <aside class="relative min-h-[180px] overflow-hidden rounded-card bg-navy lg:min-h-[560px]">
-                <svg class="auth-rings pointer-events-none absolute -right-24 -top-24 h-[380px] w-[380px] text-white opacity-10"
-                     viewBox="0 0 420 420" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <circle cx="210" cy="210" r="60"/><circle cx="210" cy="210" r="100"/>
-                    <circle cx="210" cy="210" r="140"/><circle cx="210" cy="210" r="180"/>
-                    <circle cx="210" cy="210" r="208"/>
-                </svg>
+    <main class="mx-auto flex min-h-dvh w-full max-w-5xl items-center px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))] sm:px-6">
+        <div class="grid w-full overflow-hidden rounded-[28px] bg-white p-2.5 shadow-hero lg:grid-cols-2 lg:gap-2">
 
-                <img src="{{ asset('images/login-hero.gif') }}" alt=""
-                     class="absolute inset-0 h-full w-full object-cover"
-                     onerror="this.remove()">
-
-                <div class="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-navy/80 to-transparent"></div>
-
-                <h1 class="absolute bottom-5 left-5 right-5 text-2xl font-extrabold uppercase leading-[1.05] tracking-tight text-white sm:text-3xl lg:bottom-8 lg:left-8 lg:text-[44px]">
-                    Bersama<br>Mengelola.<br>Bersama<br class="hidden lg:inline"> Mencapai.
-                </h1>
-            </aside>
-
-            {{-- Form --}}
-            <main class="flex flex-col justify-center px-4 py-8 sm:px-10 lg:px-6">
-                <a href="/" class="mx-auto mb-6 inline-flex items-center gap-2.5">
-                    <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-                        <span class="material-symbols-outlined text-[20px] text-white" aria-hidden="true">groups</span>
-                    </span>
-                    <span class="text-base font-bold tracking-tight">Galang Kita</span>
-                </a>
-
-                <div class="mx-auto w-full max-w-sm">
+            {{-- Konten: pertama di mobile, kanan di desktop --}}
+            <section class="order-1 flex flex-col justify-center px-2 py-6 sm:px-8 lg:order-2 lg:py-10">
+                <a href="{{ route('home') }}" class="mx-auto mb-6"><x-logo /></a>
+                <div class="mx-auto w-full max-w-sm lg:max-w-md">
                     {{ $slot }}
                 </div>
-            </main>
+            </section>
+
+            {{-- Panel Navy: banner di bawah (mobile), panel kiri (desktop) --}}
+            <aside class="relative order-2 mt-2 overflow-hidden rounded-3xl bg-navy p-6 text-white lg:order-1 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:p-12">
+                <svg aria-hidden="true" class="pointer-events-none absolute -right-12 -top-12 size-56 text-white opacity-10 lg:-right-20 lg:-top-20 lg:size-80" viewBox="0 0 200 200" fill="none" stroke="currentColor">
+                    <circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="52"/><circle cx="100" cy="100" r="74"/><circle cx="100" cy="100" r="96"/>
+                </svg>
+                <svg aria-hidden="true" class="pointer-events-none absolute -bottom-16 -left-16 hidden size-64 text-white opacity-5 lg:block" viewBox="0 0 200 200" fill="none" stroke="currentColor">
+                    <circle cx="100" cy="100" r="30"/><circle cx="100" cy="100" r="52"/><circle cx="100" cy="100" r="74"/><circle cx="100" cy="100" r="96"/>
+                </svg>
+                <div class="relative">
+                    <h2 class="text-3xl font-extrabold uppercase leading-[1.1] tracking-tight lg:text-5xl">
+                        <span class="block">Bersama</span>
+                        <span class="block">Mengelola.</span>
+                        <span class="block">Bersama</span>
+                        <span class="block">Mencapai.</span>
+                    </h2>
+                    <p class="mt-4 hidden max-w-xs text-base leading-7 text-white/80 lg:block">
+                        Bergabung dan jadilah bagian dari komunitas Galang Kita.
+                    </p>
+                    <span class="mt-6 hidden h-1 w-20 overflow-hidden rounded-full bg-white/15 lg:block">
+                        <span class="block h-full w-1/2 rounded-full bg-primary"></span>
+                    </span>
+                </div>
+            </aside>
         </div>
-    </div>
+    </main>
 </body>
 </html>

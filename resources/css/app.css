@@ -59,3 +59,9 @@
   font-feature-settings: 'liga';
   -webkit-font-smoothing: antialiased;
 }
+
+/* Beri ruang untuk panah dropdown di semua <select> */
+select {
+  padding-right: 2.5rem;
+  text-overflow: ellipsis;
+}

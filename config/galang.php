@@ -1,11 +1,13 @@
 <?php
 
 /*
- * Menu navigasi per peran. 'soon' => true menampilkan badge "Segera"
- * dan membuka halaman placeholder. Ganti 'route' saat fitur sudah jadi.
+ * Menu navigasi per peran. 'soon' => true menampilkan penanda "Segera"
+ * dan membuka halaman placeholder. 'match' dipakai agar menu tetap aktif
+ * di halaman turunan (detail, edit, dll.). 'group' = judul kelompok di sidebar
+ * (item sekelompok harus berurutan).
  */
-$soon = fn (string $label, string $icon, string $page) => [
-    'label' => $label, 'icon' => $icon,
+$soon = fn (string $label, string $icon, string $page, ?string $group = null) => [
+    'label' => $label, 'icon' => $icon, 'group' => $group,
     'route' => 'placeholder', 'params' => ['page' => $page], 'soon' => true,
 ];
 
@@ -16,33 +18,42 @@ return [
         'member'      => 'Anggota',
     ],
 
+    'group_categories' => [
+        'Komunitas',
+        'Kepanitiaan',
+        'Organisasi Kampus',
+        'Keluarga',
+        'Arisan',
+        'Lainnya',
+    ],
+
     'menus' => [
         'super_admin' => [
-            ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'admin.dashboard'],
-            ['label' => 'Pengguna',  'icon' => 'group',     'route' => 'admin.users'],
-            ['label' => 'Grup',      'icon' => 'groups',    'route' => 'admin.groups'],
-            $soon('Aktivitas Platform', 'history', 'aktivitas-platform'),
-            $soon('Laporan & Pengaduan', 'flag', 'laporan-pengaduan'),
-            $soon('Pengaturan Sistem', 'settings', 'pengaturan-sistem'),
+            ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'admin.dashboard', 'group' => 'Menu Utama'],
+            ['label' => 'Pengguna',  'icon' => 'group',     'route' => 'admin.users',     'group' => 'Menu Utama'],
+            ['label' => 'Grup',      'icon' => 'groups',    'route' => 'admin.groups',    'group' => 'Menu Utama'],
+            $soon('Aktivitas Platform', 'history', 'aktivitas-platform', 'Pemantauan'),
+            $soon('Laporan & Pengaduan', 'flag', 'laporan-pengaduan', 'Pemantauan'),
+            $soon('Pengaturan Sistem', 'settings', 'pengaturan-sistem', 'Preferensi'),
         ],
         'fundraiser' => [
-            ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'fundraiser.dashboard'],
-            $soon('Grup Saya', 'groups', 'grup-saya'), // ganti ke route CRUD Grup di Hari 2
-            $soon('Anggota', 'group', 'anggota'),
-            $soon('Program Dana', 'savings', 'program-dana'),
-            $soon('Kewajiban', 'receipt_long', 'kewajiban'),
-            $soon('Verifikasi Pembayaran', 'fact_check', 'verifikasi-pembayaran'),
-            $soon('Laporan', 'bar_chart', 'laporan'),
-            $soon('Pengaturan', 'settings', 'pengaturan'),
+            ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'fundraiser.dashboard', 'group' => 'Menu Utama'],
+            ['label' => 'Grup Saya', 'icon' => 'groups', 'route' => 'fundraiser.groups.index', 'match' => 'penggalang/grup*', 'group' => 'Menu Utama'],
+            ['label' => 'Anggota', 'icon' => 'group', 'route' => 'fundraiser.members.index', 'match' => 'penggalang/anggota*', 'group' => 'Menu Utama'],
+            $soon('Program Dana', 'ayam', 'program-dana', 'Pengelolaan Dana'),
+            $soon('Kewajiban', 'receipt_long', 'kewajiban', 'Pengelolaan Dana'),
+            $soon('Verifikasi Pembayaran', 'fact_check', 'verifikasi-pembayaran', 'Pengelolaan Dana'),
+            $soon('Laporan', 'bar_chart', 'laporan', 'Pengelolaan Dana'),
+            ['label' => 'Pengaturan', 'icon' => 'settings', 'route' => 'profile.edit', 'group' => 'Preferensi'],
         ],
         'member' => [
-            ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'member.dashboard'],
-            $soon('Grup Saya', 'groups', 'grup-saya'),
-            $soon('Program Dana', 'savings', 'program-dana'),
-            $soon('Kewajiban Saya', 'receipt_long', 'kewajiban-saya'),
-            $soon('Kirim Bukti Pembayaran', 'upload_file', 'kirim-bukti'),
-            $soon('Riwayat Pembayaran', 'history', 'riwayat-pembayaran'),
-            $soon('Pengaturan', 'settings', 'pengaturan'),
+            ['label' => 'Dashboard', 'icon' => 'dashboard', 'route' => 'member.dashboard', 'group' => 'Menu Utama'],
+            $soon('Grup Saya', 'groups', 'grup-saya', 'Menu Utama'),
+            $soon('Program Dana', 'ayam', 'program-dana', 'Pembayaran'),
+            $soon('Kewajiban Saya', 'receipt_long', 'kewajiban-saya', 'Pembayaran'),
+            $soon('Kirim Bukti Pembayaran', 'upload_file', 'kirim-bukti', 'Pembayaran'),
+            $soon('Riwayat Pembayaran', 'history', 'riwayat-pembayaran', 'Pembayaran'),
+            ['label' => 'Pengaturan', 'icon' => 'settings', 'route' => 'profile.edit', 'group' => 'Preferensi'],
         ],
     ],
 ];
